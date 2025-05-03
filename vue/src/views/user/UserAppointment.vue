@@ -36,7 +36,7 @@
               取消预约
             </el-button>
             <el-button
-              v-else-if="scope.row.status === '已取消'"
+              v-if="['预约成功', '预约失败', '已取消'].includes(scope.row.status)"
               @click="handleDelete(scope.row)"
               type="info"
               size="small"
@@ -117,8 +117,10 @@ const getStatusType = (status) => {
   switch (status) {
     case '预约中':
       return 'warning'
-    case '已完成':
+    case '预约成功':
       return 'success'
+    case '预约失败':
+      return 'danger'
     case '已取消':
       return 'info'
     default:

@@ -24,4 +24,13 @@ public interface AppointmentMapper {
 
     @Delete("delete from appointment where appointment_id = #{appointmentId}")
     void delete(@Param("appointmentId")Integer appointmentId);
+
+    @Update("update appointment set status = #{status} where appointment_id = #{appointmentId}")
+    void update(@Param("appointmentId")Integer appointmentId, @Param("status")String status);
+
+    @Update("update appointment set status = '预约成功' where appointment_id = #{appointmentId}")
+    void approve(Appointment appointment);
+
+    @Update("update appointment set status = '预约失败' where appointment_id = #{appointmentId}")
+    void reject(Appointment appointment);
 }

@@ -41,8 +41,9 @@ const router = createRouter({
       name: 'coach',
       component: () => import('@/views/coach/CoachManage.vue'),
       children:[
-        { path: 'home', name: 'home', meta: { title: '系统首页' }, component: () => import('@/views/coach/Home.vue')},
-        {path: 'appointmentDetail', name: 'appointmentDetail', meta: { title: '预约管理' }, component: () => import('@/views/coach/AppointmentDetail.vue')}
+        {path: 'home', name: 'home', meta: { title: '系统首页' }, component: () => import('@/views/coach/Home.vue')},
+        {path: 'appointmentDetail', name: 'appointmentDetail', meta: { title: '预约管理' }, component: () => import('@/views/coach/AppointmentDetail.vue')},
+        {path: 'myCourse', name: 'myCourse', meta: { title: '我的课程' }, component: () => import('@/views/coach/MyCourse.vue')}
       ]
     },
     { path: '/login', name: 'login', meta: { title: '登录' }, component: () => import('@/views/Login.vue') },

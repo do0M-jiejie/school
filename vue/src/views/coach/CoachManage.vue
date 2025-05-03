@@ -19,7 +19,7 @@
       <el-menu router :default-active="router.currentRoute.value.path" style="border: 0">
         <el-menu-item index="/coach/home"><el-icon><House /></el-icon>系统首页</el-menu-item>
         <el-menu-item index="/coach/appointmentDetail"><el-icon><User /></el-icon>预约管理</el-menu-item>
-        <el-menu-item index="/data"><el-icon><DataAnalysis /></el-icon>数据统计</el-menu-item>
+        <el-menu-item index="/coach/myCourse"><el-icon><DataAnalysis /></el-icon>我的课程</el-menu-item>
         <el-menu-item index="/login"><el-icon><SwitchButton /></el-icon>退出登录</el-menu-item>
       </el-menu>
     </div>
@@ -29,7 +29,6 @@
       <RouterView/>
     </div>
     <!--右侧内容区-->
-
   </div>
 </template>
 

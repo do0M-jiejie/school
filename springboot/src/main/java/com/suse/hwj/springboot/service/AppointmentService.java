@@ -37,4 +37,11 @@ public class AppointmentService {
         appointmentMapper.delete(appointmentId);
     }
 
+    public void approve(Appointment appointment) {
+        appointmentMapper.approve(appointment);
+    }
+
+    public void reject(Appointment appointment) {
+        appointmentMapper.reject(appointment);
+    }
 }

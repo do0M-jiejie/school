@@ -25,23 +25,23 @@
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="notes" align="center"/>
-        <el-table-column label="操作" width="120" align="center">
+        <el-table-column label="操作" width="200" align="center">
           <template #default="scope">
             <el-button
               v-if="scope.row.status === '预约中'"
-              @click="handleCancel(scope.row)"
+              @click="handleApprove(scope.row)"
+              type="success"
+              size="small"
+            >
+              同意预约
+            </el-button>
+            <el-button
+              v-if="scope.row.status === '预约中'"
+              @click="handleReject(scope.row)"
               type="danger"
               size="small"
             >
-              取消预约
-            </el-button>
-            <el-button
-              v-else-if="scope.row.status === '已取消'"
-              @click="handleDelete(scope.row)"
-              type="info"
-              size="small"
-            >
-              删除记录
+              拒绝预约
             </el-button>
           </template>
         </el-table-column>
@@ -111,8 +111,10 @@ const getStatusType = (status) => {
   switch (status) {
     case '预约中':
       return 'warning'
-    case '已完成':
+    case '预约成功':
       return 'success'
+    case '预约失败':
+      return 'danger'
     case '已取消':
       return 'info'
     default:
@@ -120,54 +122,60 @@ const getStatusType = (status) => {
   }
 }
 
-// 取消预约
-const handleCancel = (row) => {
+// 同意预约
+const handleApprove = (row) => {
   ElMessageBox.confirm(
-    '确定要取消该预约吗？',
-    '取消预约',
+    '确定同意该预约请求吗？',
+    '同意预约',
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
-      type: 'warning'
+      type: 'success'
     }
   ).then(() => {
-    request.put('/appointment/cancel', {
+    request.put('/appointment/approve', {
       appointmentId: row.appointmentId
     }).then(res => {
       if (res.code === '200') {
-        ElMessage.success('取消预约成功')
+        ElMessage.success('已同意预约')
         loadAppointments()
       } else {
-        ElMessage.error(res.msg || '取消预约失败')
+        ElMessage.error(res.msg || '操作失败')
       }
     }).catch(error => {
-      console.error('取消预约失败:', error)
-      ElMessage.error('取消预约失败')
+      console.error('操作失败:', error)
+      ElMessage.error('操作失败')
     })
   })
 }
 
-// 删除预约记录
-const handleDelete = (row) => {
-  ElMessageBox.confirm(
-    '确定要删除该预约记录吗？删除后无法恢复！',
-    '删除记录',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
+// 拒绝预约
+const handleReject = (row) => {
+  ElMessageBox.prompt('请输入拒绝原因', '拒绝预约', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputType: 'textarea',
+    inputPlaceholder: '请输入拒绝原因',
+    inputValidator: (value) => {
+      if (!value) {
+        return '请输入拒绝原因'
+      }
+      return true
     }
-  ).then(() => {
-    request.delete(`/appointment/delete/${row.appointmentId}`).then(res => {
+  }).then(({ value }) => {
+    request.put('/appointment/reject', {
+      appointmentId: row.appointmentId,
+      notes: value
+    }).then(res => {
       if (res.code === '200') {
-        ElMessage.success('删除成功')
+        ElMessage.success('已拒绝预约')
         loadAppointments()
       } else {
-        ElMessage.error(res.msg || '删除失败')
+        ElMessage.error(res.msg || '操作失败')
       }
     }).catch(error => {
-      console.error('删除失败:', error)
-      ElMessage.error('删除失败')
+      console.error('操作失败:', error)
+      ElMessage.error('操作失败')
     })
   })
 }

@@ -47,6 +47,15 @@ public class AppointmentController {
         appointmentService.delete(appointmentId);
         return Result.success();
     }
-
+    @PutMapping("/approve")
+    public Result approve(@RequestBody Appointment appointment) {
+        appointmentService.approve(appointment);
+        return Result.success();
+    }
+    @PutMapping("/reject")
+    public Result reject(@RequestBody Appointment appointment) {
+        appointmentService.reject(appointment);
+        return Result.success();
+    }
 
 }
