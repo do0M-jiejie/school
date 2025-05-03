@@ -4,8 +4,8 @@
     <div class="login-box">
       <div style="font-weight: bold; font-size: 24px; text-align: center; margin-bottom: 30px; color: #ae7f18">欢 迎 登 录</div>
       <el-form :model="data.form"  ref="formRef" :rules="data.rules">
-        <el-form-item prop="username">
-          <el-input :prefix-icon="User" size="large" v-model="data.form.username" placeholder="请输入账号" />
+        <el-form-item prop="account">
+          <el-input :prefix-icon="User" size="large" v-model="data.form.account" placeholder="请输入账号" />
         </el-form-item>
         <el-form-item prop="password">
           <el-input :prefix-icon="Lock" size="large" v-model="data.form.password" placeholder="请输入密码" show-password />
@@ -14,6 +14,7 @@
           <el-select size="large" style="width: 100%" v-model="data.form.role">
             <el-option value="管理员" label="管理员"></el-option>
             <el-option value="普通用户" label="普通用户"></el-option>
+            <el-option value="教练" label="教练"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -21,7 +22,7 @@
         </el-form-item>
       </el-form>
       <div style="text-align: right;">
-        还没有账号？请 <a href="/register" >注册</a>
+        还没有账号？请 <router-link to="/register">注册</router-link>
       </div>
     </div>
 
@@ -39,7 +40,7 @@ const data = reactive({
   dialogVisible: true,
   form: { role: '管理员' },
   rules: {
-    username: [
+    account: [
       { required: true, message: '请输入账号', trigger: 'blur' },
     ],
     password: [
@@ -60,9 +61,11 @@ const login = () => {
           //存储用户信息
           localStorage.setItem('userInfo', JSON.stringify(res.data)) //JSON对象转换成json字符
           if (data.form.role === '管理员'){
-            router.push({ name: 'user_manager' })
-          } else {
+            router.push({ name: 'data' })
+          } else if(data.form.role === '普通用户'){
             router.push({ name: 'homepage' })
+          }else {
+            router.push({name:'home'})
           }
           ElMessage.success("登录成功")
         } else {

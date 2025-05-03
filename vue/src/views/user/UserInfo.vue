@@ -12,6 +12,23 @@
 
       <el-dialog title="用户信息" v-model="data.formVisible" width="500" destroy-on-close>
         <el-form ref="formRef" :rules="data.rules" :model="data.form" label-width="80px" style="padding-right: 40px; padding-top: 20px">
+          <el-form-item label="用户头像">
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:8080/files/upload"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+            >
+              <!-- 关键修改：始终显示图片（如果存在），覆盖在上传组件上 -->
+              <img
+                v-if="data.form.avatar"
+                :src="data.form.avatar"
+                class="avatar"
+                style="cursor: pointer;"
+              />
+              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            </el-upload>
+          </el-form-item>
           <el-form-item label="用户名" prop="username">
             <el-input v-model="data.form.username" autocomplete="off" placeholder="请输入名称" />
           </el-form-item>
@@ -93,6 +110,7 @@ import { ref, onMounted, reactive} from 'vue'
 import request from '@/utils/request.js'
 import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
+import { Plus } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const userInfo = ref({})
@@ -116,22 +134,22 @@ const data = reactive({
   }
 })
 
-onMounted(() => {
+const loadUserInfo = () => {
   const userId = route.params.id
   request.get(`/users/selectById/${userId}`).then(res => {
     if (res.code === '200') {
       userInfo.value = res.data
-    } else {
-      console.error(res.msg)
-      ElMessage.error(res.msg || '获取用户详情失败')
     }
-  }).catch(error => {
-    console.error('获取用户详情失败:', error)
   })
+}
+
+onMounted(() => {
+  loadUserInfo()
 })
 
 // 打开充值弹窗
 const openRechargeDialog = () => {
+  rechargeAmount.value = 1000
   dialogVisible.value = true
 }
 
@@ -150,7 +168,18 @@ const handleRecharge = () => {
     .then(res => {
       if (res.code === '200') {
         ElMessage.success('充值成功')
-        userInfo.value.balance = Number(userInfo.value.balance) + Number(rechargeAmount.value);  // 更新余额
+        // 计算新的余额
+        const newBalance = Number(userInfo.value.balance) + Number(rechargeAmount.value)
+
+        // 更新本地 userInfo
+        userInfo.value.balance = newBalance
+
+        // 更新 localStorage 中的 userInfo
+        const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'))
+        if (storedUserInfo) {
+          storedUserInfo.balance = newBalance
+          localStorage.setItem('userInfo', JSON.stringify(storedUserInfo))
+        }
         dialogVisible.value = false  // 关闭弹窗
       } else {
         ElMessage.error(res.msg || '充值失败')
@@ -184,9 +213,36 @@ const handleUpdate = (row) => {
   data.form = JSON.parse(JSON.stringify(row)) //深拷贝一个新的对象 用于编辑 这样不会影响行数据
   data.formVisible = true
 }
+
+const handleAvatarSuccess = (response,file) => {
+  if (response.code === '200') {
+    data.form.avatar = response.data;
+    // 更新 userInfo 中的头像
+    userInfo.value.avatar = response.data;
+    // 更新 localStorage 中的用户信息
+    const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+    if (storedUserInfo) {
+      storedUserInfo.avatar = response.data;
+      localStorage.setItem('userInfo', JSON.stringify(storedUserInfo));
+    }
+    window.dispatchEvent(new CustomEvent('avatar-updated', {
+      detail: { newAvatar: response.data }
+    }));
+    ElMessage.success("头像更新成功");
+  } else {
+    ElMessage.error(response.msg || "上传失败");
+  }
+}
+
 </script>
 
 <style scoped>
+.avatar-uploader .avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
+
 .user-profile {
   display: flex;
   flex-direction: column;
@@ -217,9 +273,8 @@ const handleUpdate = (row) => {
 .avatar {
   width: 120px;
   height: 120px;
-  border-radius: 50%;
+  //border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 20px;
 }
 
 .buttons-container {
@@ -254,5 +309,28 @@ const handleUpdate = (row) => {
 .info-value {
   font-weight: 400;
   color: #2c3e50;
+}
+</style>
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  text-align: center;
 }
 </style>

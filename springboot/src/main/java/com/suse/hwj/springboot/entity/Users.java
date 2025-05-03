@@ -1,8 +1,20 @@
 package com.suse.hwj.springboot.entity;
 
+import java.math.BigDecimal;
+
 public class Users {
     private Integer userId;
     private String username;
+    private String account;
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
     private String password;
     private String email;
     private String phone;
@@ -13,14 +25,14 @@ public class Users {
     private String weight;
     private String registrationDate;
     private String status;
-    private Integer balance;
+    private BigDecimal balance;
 
 
-    public Integer getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(Integer balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

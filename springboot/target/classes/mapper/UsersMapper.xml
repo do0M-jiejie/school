@@ -13,20 +13,25 @@
     </select>
 
     <insert id="insert" parameterType="com.suse.hwj.springboot.entity.Users" useGeneratedKeys="true" keyProperty="userId">
-        insert into `users` (username,password,role,gender,email,phone)
-        values (#{username},#{password},#{role},#{gender},#{email},#{phone})
+        insert into `users` (username,account,password,role,email,phone,status,avatar)
+        values (#{username},#{account},#{password},#{role},#{email},#{phone},#{status},#{avatar})
+    </insert>
+
+    <insert id="register" parameterType="com.suse.hwj.springboot.entity.Users" useGeneratedKeys="true" keyProperty="userId">
+        insert into `users` (username,account,password)
+        values (#{username},#{account},#{password})
     </insert>
 
     <update id="updateById" parameterType="com.suse.hwj.springboot.entity.Users">
         update `users`
         <set>
+            <if test="dto.avatar != null">avatar = #{dto.avatar},</if>
             <if test="dto.username != null">username = #{dto.username},</if>
+            <if test="dto.account != null">account = #{dto.account},</if>
             <if test="dto.password != null">password = #{dto.password},</if>
             <if test="dto.role != null">role = #{dto.role},</if>
             <if test="dto.email != null">email = #{dto.email},</if>
             <if test="dto.phone != null">phone = #{dto.phone},</if>
-            <if test="dto.height != null">height = #{dto.height},</if>
-            <if test="dto.weight != null">weight = #{dto.weight},</if>
             <if test="dto.status != null">status = #{dto.status},</if>
         </set>
         where user_id = #{dto.userId}

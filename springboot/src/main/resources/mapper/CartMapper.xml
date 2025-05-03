@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suse.hwj.springboot.mapper.CartMapper">
+
+    <insert id="addToCart" parameterType="com.suse.hwj.springboot.entity.Cart" useGeneratedKeys="true" keyProperty="cartId">
+        insert into `cart` (user_id, course_id, course_name, price, coach_name, created_time)
+        VALUES (
+                   #             参数类型检查
+                   #{userId,jdbcType=INTEGER},
+                   #{courseId,jdbcType=INTEGER},
+                   #{courseName,jdbcType=VARCHAR},
+                   #{price,jdbcType=DECIMAL},
+                   #{coachName,jdbcType=VARCHAR},
+                   #{createdTime,jdbcType=TIMESTAMP}
+               )
+    </insert>
+
+    <select id="getCartList" resultType="com.suse.hwj.springboot.entity.Cart">
+        select * from `cart` where user_id = #{userId}
+    </select>
+
+    <delete id="removeFromCart">
+        delete from `cart` where cart_id = #{cartId}
+    </delete>
+
+</mapper>

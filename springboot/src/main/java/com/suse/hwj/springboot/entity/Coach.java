@@ -3,23 +3,21 @@ package com.suse.hwj.springboot.entity;
 public class Coach {
     private Integer coachId;
     private String coachName;
+    private String account;
+    private String password;
+    private String role;
     private String avatar;
+    private String status;
+    private String description;
+    private Integer isPrivate;
     private String phone;
 
-    public Integer getCoachId() {
-        return coachId;
+    public String getRole() {
+        return role;
     }
 
-    public void setCoachId(Integer coachId) {
-        this.coachId = coachId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getPhone() {
@@ -30,13 +28,30 @@ public class Coach {
         this.phone = phone;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getAccount() {
+        return account;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAccount(String account) {
+        this.account = account;
     }
+
+    public Integer getCoachId() {
+        return coachId;
+    }
+
+    public void setCoachId(Integer coachId) {
+        this.coachId = coachId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
     public String getCoachName() {
         return coachName;
@@ -46,6 +61,36 @@ public class Coach {
         this.coachName = coachName;
     }
 
-    private String description;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Integer isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
 }

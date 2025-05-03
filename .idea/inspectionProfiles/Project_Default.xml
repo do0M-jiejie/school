@@ -4,6 +4,11 @@
     <inspection_tool class="CommentedOutCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="minLines" value="6" />
     </inspection_tool>
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="72" name="Java" />
+      </Languages>
+    </inspection_tool>
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
@@ -30,7 +35,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="52">
+          <list size="57">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -83,6 +88,11 @@
             <item index="49" class="java.lang.String" itemvalue="Opportunity" />
             <item index="50" class="java.lang.String" itemvalue="Place" />
             <item index="51" class="java.lang.String" itemvalue="el-link" />
+            <item index="52" class="java.lang.String" itemvalue="el-menu-item-group" />
+            <item index="53" class="java.lang.String" itemvalue="el-tag" />
+            <item index="54" class="java.lang.String" itemvalue="router-link" />
+            <item index="55" class="java.lang.String" itemvalue="el-upload" />
+            <item index="56" class="java.lang.String" itemvalue="Plus" />
           </list>
         </value>
       </option>

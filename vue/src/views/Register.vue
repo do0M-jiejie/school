@@ -4,8 +4,11 @@
     <div class="login-box">
       <div style="font-weight: bold; font-size: 24px; text-align: center; margin-bottom: 30px; color: #ae7f18">欢 迎 注 册</div>
       <el-form :model="data.form"  ref="formRef" :rules="data.rules">
-        <el-form-item prop="username">
-          <el-input :prefix-icon="User" size="large" v-model="data.form.username" placeholder="请输入账号" />
+        <el-form-item prop="account">
+          <el-input :prefix-icon="User" size="large" v-model="data.form.username" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item prop="account">
+          <el-input :prefix-icon="User" size="large" v-model="data.form.account" placeholder="请输入账号" />
         </el-form-item>
         <el-form-item prop="password">
           <el-input :prefix-icon="Lock" size="large" v-model="data.form.password" placeholder="请输入密码" show-password />
@@ -18,7 +21,7 @@
         </el-form-item>
       </el-form>
       <div style="text-align: right;">
-        还没有账号？请 <a href="/login">登录</a>
+        有账号了？请 <router-link to="/login">登录</router-link>
       </div>
     </div>
 
@@ -46,6 +49,9 @@ const data = reactive({
   form: { role: 'USER' },
   rules: {
     username: [
+      { required: true, message: '请输入用户名', trigger: 'blur' },
+    ],
+    account: [
       { required: true, message: '请输入账号', trigger: 'blur' },
     ],
     password: [

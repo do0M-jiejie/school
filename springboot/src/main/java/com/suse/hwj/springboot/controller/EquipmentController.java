@@ -23,4 +23,9 @@ public class EquipmentController {
         List<Equipment> list = equipmentService.selectAll();
         return Result.success(list);
     }
+
+    @GetMapping("/count")
+    public Result count() {
+        return Result.success(equipmentService.count());
+    }
 }

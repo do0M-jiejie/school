@@ -78,4 +78,11 @@ public class UsersController {
         return Result.success();
     }
 
+    //获取用户数量
+    @GetMapping("/count")
+    public Result count() {
+        int count = usersService.count();
+        return Result.success(count);
+    }
+
 }

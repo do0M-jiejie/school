@@ -1,14 +1,16 @@
 package com.suse.hwj.springboot.entity;
 
+import java.math.BigDecimal;
+
 public class RechargeDTO {
-    private Integer amount;
+    private BigDecimal amount;
     private String name;
 
-    public Integer getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

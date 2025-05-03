@@ -24,7 +24,7 @@
           <!-- 课程价格和购买按钮部分 -->
           <div class="price-and-buy">
             <span class="price">￥{{ courseDetail.price }}</span>
-            <button class="buy-btn" @click="handleBuy">我要购买</button>
+            <button class="buy-btn" @click="handleAddToCart">加入购物车</button>
           </div>
         </div>
       </div>
@@ -67,39 +67,38 @@ onMounted(() => {
   })
 })
 
-const handleBuy = () => {
-  // 处理购买逻辑，例如跳转到支付页面或显示提示
-  const userBalance = data.user.balance; // 用户余额
-  const coursePrice = courseDetail.value.price; // 当前课程的价格
-
-  if (userBalance >= coursePrice) {
-    // 余额足够，调用购买接口
-    purchaseCourse(coursePrice,data.user.username);
-    createOrder();
-  } else {
-    // 余额不足，弹出提示
-    ElMessage.error('账户余额不足，无法完成购买');
+const handleAddToCart = () => {
+  // 检查用户是否登录
+  if (!data.user || !data.user.userId) {
+    ElMessage.error('请先登录后再操作')
+    return
   }
-}
 
-const purchaseCourse = (coursePrice,username) => {
-request.put('/users/updateByName',{
-  amount: coursePrice,
-  name: username
-}).then(res => {
-  if (res.code === '200') {
-    ElMessage.success('购买成功')
-  }else {
-    ElMessage.error('购买失败')
+  // 检查课程信息是否完整
+  if (!courseDetail.value.courseId) {
+    ElMessage.error('课程信息不完整')
+    return
   }
-})
-}
 
-const createOrder = () => {
-  request.post('/order/create',{
+  const cartData = {
     userId: data.user.userId,
-    courseId: courseDetail.value.courseId
-  })
+    courseId: courseDetail.value.courseId,
+    courseName: courseDetail.value.courseName,
+    price: courseDetail.value.price,
+    coachName: courseDetail.value.coachName,
+    createdTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
+  }
+
+  request.post('/cart/add', cartData)
+    .then(res => {
+      if (res.code === '200') {
+        ElMessage.success('成功加入购物车')
+      } else if (res.code === '500' ) {
+        ElMessage.warning('该课程已在购物车中')
+      } else {
+        ElMessage.error(res.msg || '加入购物车失败')
+      }
+    })
 }
 
 </script>

@@ -9,4 +9,7 @@ public interface EquipmentMapper {
 
     @Select("select * from equipment")
     List<Equipment> selectAll();
+
+    @Select("select count(*) from equipment")
+    int count();
 }

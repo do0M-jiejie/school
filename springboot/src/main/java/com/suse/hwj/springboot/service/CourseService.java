@@ -1,6 +1,9 @@
 package com.suse.hwj.springboot.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.suse.hwj.springboot.entity.Course;
+import com.suse.hwj.springboot.entity.Users;
 import com.suse.hwj.springboot.mapper.CourseMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,7 @@ public class CourseService {
 
     public List<Course> selectAll() {
         return courseMapper.selectAll();
-    }
+    }//
 
     public Course selectById(Integer courseId) {
         return courseMapper.selectById(courseId);
@@ -25,5 +28,28 @@ public class CourseService {
 
     public Course getCourseById(Integer courseId) {
         return courseMapper.getCourseById(courseId);
+    }
+
+    public List<Course> selectByCoachId(Integer coachId) {
+        return courseMapper.selectByCoachId(coachId);
+    }
+
+
+    public int count() {
+        return courseMapper.count();
+    }
+
+    public PageInfo<Course> selectPage(Course course, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Course> list = courseMapper.selectAll();
+        return PageInfo.of(list);
+    }//
+
+    public void add(Course course) {
+        courseMapper.insert(course);
+    }
+
+    public void update(Course course) {
+        courseMapper.updateById(course);
     }
 }

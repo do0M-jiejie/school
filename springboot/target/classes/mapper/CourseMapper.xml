@@ -3,9 +3,37 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.suse.hwj.springboot.mapper.CourseMapper">
+    <update id="updateById" parameterType="com.suse.hwj.springboot.entity.Course">
+        update `course`
+        <set>
+            <if test="dto.coverImage != null">coverImage = #{dto.coverImage},</if>
+            <if test="dto.courseName != null">courseName = #{dto.courseName},</if>
+            <if test="dto.coachName != null">coachName = #{dto.coachName},</if>
+            <if test="dto.duration != null">duration = #{dto.duration},</if>
+            <if test="dto.price != null">price = #{dto.price},</if>
+            <if test="dto.description != null">descriptio = #{dto.descriptio},</if>
+            where course_id = #{courseId}
+        </set>
+    </update>
+    <select id="selectCoachIdByName" parameterType="String" resultType="Long">
+        SELECT coach_id
+        FROM coach
+        WHERE coach_name = #{coachName}
+        LIMIT 1
+    </select>
+    <insert id="insert" parameterType="com.suse.hwj.springboot.entity.Course">
+        INSERT INTO `course`
+            (course_name, coach_id, coach_name, cover_image, duration, price, description)
+        VALUES
+            (#{courseName}, #{coachId}, #{coachName}, #{coverImage}, #{duration}, #{price}, #{description})
+    </insert>
 
     <select id="selectAll" resultType="com.suse.hwj.springboot.entity.Course" >
         select * from `course`
+        <where>
+            <if test="courseName != null">course_name like concat('%', #{courseName},'%')</if>
+        </where>
     </select>
+
 
 </mapper>

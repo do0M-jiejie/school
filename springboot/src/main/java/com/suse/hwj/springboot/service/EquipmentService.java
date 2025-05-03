@@ -18,4 +18,8 @@ public class EquipmentService {
     public List<Equipment> selectAll() {
         return equipmentMapper.selectAll();
     }
+
+    public int count() {
+        return equipmentMapper.count();
+    }
 }

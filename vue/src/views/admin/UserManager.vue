@@ -16,8 +16,19 @@
     <div class="card" style="margin-bottom: 5px">
       <el-table :data="data.tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
+        <el-table-column label="头像" prop="avatar">
+          <template #default="{ row }">
+            <img
+              :src="row.avatar"
+              style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"
+              v-if="row.avatar"
+            />
+            <span v-else>无头像</span>
+          </template>
+        </el-table-column>
         <el-table-column label="姓名" prop="username"/>
-        <el-table-column label="性别" prop="gender"/>
+        <el-table-column label="账号" prop="account"/>
+        <el-table-column label="余额" prop="balance"/>
         <el-table-column label="权限" prop="role"/>
         <el-table-column label="邮箱" prop="email"/>
         <el-table-column label="手机号码" prop="phone"/>
@@ -45,21 +56,34 @@
 
     <el-dialog title="用户信息" v-model="data.formVisible" width="500" destroy-on-close>
       <el-form ref="formRef" :rules="data.rules" :model="data.form" label-width="80px" style="padding-right: 40px; padding-top: 20px">
+        <el-form-item label="用户头像">
+          <el-upload
+            class="avatar-uploader"
+            action="http://localhost:8080/files/upload"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+          >
+            <!-- 关键修改：始终显示图片（如果存在），覆盖在上传组件上 -->
+            <img
+              v-if="data.form.avatar"
+              :src="data.form.avatar"
+              class="avatar"
+              style="cursor: pointer;"
+            />
+            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="data.form.username" autocomplete="off" placeholder="请输入名称" />
+          <el-input v-model="data.form.username" autocomplete="off" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item label="账号" prop="account">
+          <el-input v-model="data.form.account" autocomplete="off" placeholder="请输入账号" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="data.form.password" autocomplete="off" placeholder="请输入手机号码"/>
+          <el-input v-model="data.form.password" autocomplete="off" placeholder="请输入密码"/>
         </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-radio-group v-model="data.form.gender">
-            <el-radio value="男">男</el-radio>
-            <el-radio value="女">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="权限" prop="role">
+        <el-form-item label="身份" prop="role">
           <el-radio-group v-model="data.form.role">
-            <el-radio value="管理员">管理员</el-radio>
             <el-radio value="普通用户">普通用户</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -69,6 +93,13 @@
         <el-form-item label="手机号码" prop="phone">
           <el-input v-model="data.form.phone" autocomplete="off" placeholder="请输入手机号码"/>
         </el-form-item>
+        <el-form-item label="账号状态" prop="status">
+          <el-radio-group v-model="data.form.status">
+            <el-radio value="正常">正常</el-radio>
+            <el-radio value="封禁">封禁</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -88,11 +119,10 @@
 import { reactive, ref } from 'vue'
 import request from '@/utils/request.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete, Edit } from '@element-plus/icons-vue'
+import { Delete, Edit, Plus } from '@element-plus/icons-vue'
 
 const data = reactive({
-  tableData: [
-  ],
+  tableData: [],
   pageNum: 1,
   pageSize: 5,
   total: 0,
@@ -104,20 +134,23 @@ const data = reactive({
     username: [
       { required: true, message:'请输入用户名', trigger: 'blur' }
     ],
+    account: [
+      { required: true, message:'请输入账号', trigger: 'blur' }
+    ],
     password: [
       { required: true, message:'请输入密码', trigger: 'blur' }
     ],
-    gender: [
-      { required: true, message:'请选择性别', trigger: 'blur' }
-    ],
     role: [
-      { required: true, message:'请选择权限', trigger: 'blur' }
+      { required: true, message:'请选择身份', trigger: 'blur' }
     ],
     email: [
       { required: true, message:'请输入邮箱', trigger: 'blur' }
     ],
     phone: [
       { required: true, message:'请输入手机号码', trigger: 'blur' }
+    ],
+    status: [
+      { required: true, message:'请选择账号状态', trigger: 'blur' }
     ]
   }
 })
@@ -220,4 +253,44 @@ const delBatch = () => {
     })
   }).catch()
 }
+
+const handleAvatarSuccess = (response, file) => {
+  if (response.code === '200') {
+    data.form.avatar = response.data;
+    ElMessage.success("头像更新成功");
+  } else {
+    ElMessage.error(response.msg || "上传失败");
+  }
+};
 </script>
+
+<style scoped>
+.avatar-uploader .avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
+</style>
+
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  text-align: center;
+}
+</style>

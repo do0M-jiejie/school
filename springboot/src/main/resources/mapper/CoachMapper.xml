@@ -3,9 +3,30 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.suse.hwj.springboot.mapper.CoachMapper">
+    <insert id="insert" parameterType="com.suse.hwj.springboot.entity.Coach" useGeneratedKeys="true" keyProperty="coachId">
+        insert into `coach` (account, password, coach_name,phone,status,role,avatar)
+        values (#{account},#{password},#{coachName},#{phone},#{status},#{role},#{avatar})
+    </insert>
+    <update id="updateById" parameterType="com.suse.hwj.springboot.entity.Coach">
+        update `coach`
+        <set>
+            <if test="dto.avatar != null">avatar = #{dto.avatar},</if>
+            <if test="dto.coachName != null">coach_name = #{dto.coachName},</if>
+            <if test="dto.account != null">account = #{dto.account},</if>
+            <if test="dto.password != null">password = #{dto.password},</if>
+            <if test="dto.role != null">role = #{dto.role},</if>
+            <if test="dto.phone != null">phone = #{dto.phone},</if>
+            <if test="dto.status != null">status = #{dto.status},</if>
+        </set>
+        where coach_id = #{dto.coachId}
+    </update>
 
     <select id="selectAll" resultType="com.suse.hwj.springboot.entity.Coach" >
         select * from `coach`
+        <where>
+            <if test="dto.coachName != null"> coach_name like concat('%', #{dto.coachName},'%')</if>
+        </where>
+        order by coach_id desc
     </select>
 
 </mapper>

@@ -1,11 +1,10 @@
 package com.suse.hwj.springboot.mapper;
 
+import com.suse.hwj.springboot.entity.Login;
 import com.suse.hwj.springboot.entity.Users;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface UsersMapper {
@@ -25,6 +24,17 @@ public interface UsersMapper {
     @Select("select * from `Users` where username = #{username}")
     Users selectByUsername(String username);
 
-    @Update("update `users` set balance = balance + #{amount} where username = #{name}")
-    void updateByUsername(@Param("amount") Integer amount, @Param("name") String name);
+    @Update("UPDATE `users` SET balance = balance + #{amount} WHERE username = #{name}")
+    int updateByUsername(@Param("amount") BigDecimal amount, @Param("name") String name);
+
+    @Select("select count(*) from `users`")
+    int count();
+
+    @Select("select count(*) from `users` where role = #{role}")
+    int countByRole(@Param("role") String role);
+
+    @Select("select * from `users` where account = #{account}")
+    Users selectByAccount(String account);
+
+    void register(Users users);
 }
