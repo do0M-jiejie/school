@@ -3,7 +3,6 @@ package com.suse.hwj.springboot.controller;
 import com.github.pagehelper.PageInfo;
 import com.suse.hwj.springboot.common.Result;
 import com.suse.hwj.springboot.entity.Course;
-import com.suse.hwj.springboot.entity.Users;
 import com.suse.hwj.springboot.service.CourseService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -65,6 +64,20 @@ public class CourseController {
     @PutMapping("/update")
     public Result update(@RequestBody Course course) {
         courseService.update(course);
+        return Result.success();
+    }
+
+    //单个删除数据
+    @DeleteMapping("/deleteById/{courseId}")
+    public Result deleteById(@PathVariable Integer courseId) {
+        courseService.deleteById(courseId);
+        return Result.success();
+    }
+
+    //批量删除数据
+    @DeleteMapping("/deleteBatch")
+    public Result deleteBatch(@RequestBody List<Integer> ids) {
+        courseService.deleteBatch(ids);
         return Result.success();
     }
 }

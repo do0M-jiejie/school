@@ -1,6 +1,7 @@
 package com.suse.hwj.springboot.mapper;
 
 import com.suse.hwj.springboot.entity.Course;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,5 +26,8 @@ public interface CourseMapper {
 
     void insert(Course course);
 
-    void updateById(@Param("dto")Course course);
+    void updateById(Course course);
+
+    @Delete("delete from `course` where course_id = #{courseId}")
+    void deleteById(Integer courseId);
 }

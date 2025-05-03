@@ -3,7 +3,6 @@ package com.suse.hwj.springboot.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.suse.hwj.springboot.entity.Course;
-import com.suse.hwj.springboot.entity.Users;
 import com.suse.hwj.springboot.mapper.CourseMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -51,5 +50,15 @@ public class CourseService {
 
     public void update(Course course) {
         courseMapper.updateById(course);
+    }
+
+    public void deleteById(Integer courseId) {
+        courseMapper.deleteById(courseId);
+    }
+
+    public void deleteBatch(List<Integer> ids) {
+        for (Integer courseId : ids) {
+            this.deleteById(courseId);
+        }
     }
 }

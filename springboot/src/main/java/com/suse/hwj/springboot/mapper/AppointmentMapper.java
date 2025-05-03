@@ -16,6 +16,9 @@ public interface AppointmentMapper {
     @Select("select * from appointment where user_id = #{userId}")
     List<Appointment> userAppointments(String userId);
 
+    @Select("select * from appointment where coach_id = #{coachId}")
+    List<Appointment> coachAppointments(String coachId);
+
     @Update("update appointment set status = '已取消' where appointment_id = #{appointmentId}")
     void cancel(@Param("appointmentId")Integer appointmentId);
 

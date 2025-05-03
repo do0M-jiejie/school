@@ -2,7 +2,7 @@
   <div>
     <div>
       <el-card style="margin-bottom: 10px">
-        <el-input style="width: 240px" v-model="data.username" placeholder="请输入……" prefix-icon="Search"></el-input>
+        <el-input style="width: 240px" v-model="data.courseName" placeholder="请输入……" prefix-icon="Search"></el-input>
         <el-button type="primary" style="margin-left: 10px" @click="load">查询</el-button>
         <el-button type="warning" style="margin-left: 10px" @click="reset">重置</el-button>
       </el-card>
@@ -34,7 +34,7 @@
         <el-table-column label="操作" width="120">
           <template #default="scope">
             <el-button @click="handleUpdate(scope.row)" :icon="Edit" circle type="primary"></el-button>
-            <el-button @click="del(scope.row.userId)" :icon="Delete" circle type="danger"></el-button>
+            <el-button @click="del(scope.row.courseId)" :icon="Delete" circle type="danger"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,7 +52,7 @@
       </div>
     </div>
 
-    <el-dialog title="新增课程" v-model="data.formVisible" width="500" destroy-on-close>
+    <el-dialog title="课程信息" v-model="data.formVisible" width="500" destroy-on-close>
       <el-form ref="formRef" :rules="data.rules" :model="data.form" label-width="80px" style="padding-right: 40px; padding-top: 20px">
         <el-form-item label="课程封面">
           <el-upload
@@ -106,7 +106,7 @@
 import { reactive, ref } from 'vue'
 import request from '@/utils/request.js'
 import { Delete, Edit, Plus } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const data = reactive({
   tableData: [],
@@ -132,6 +132,9 @@ const load = () => {
     data.total = res.data.total
   })
 }
+
+const formRef = ref()
+
 load()
 
 const reset = () => {
@@ -186,21 +189,44 @@ const handleUpdate = (row) => {
   data.formVisible = true
 }
 
-const handleAvatarSuccess = (response, file) => {
-  data.form.coverImage = response.data;
+const del = (courseId) => {
+  ElMessageBox.confirm('删除数据后无法恢复，您确认删除嘛？','删除确认', {type:"warning"}).then(() => {
+    request.delete('/course/deleteById/' + courseId).then(res => {
+      if(res.code === '200'){
+        ElMessage.success('操作成功')
+        load() //删除后要重新加载最新数据
+      } else {
+        ElMessage.error(res.msg)
+      }
+    })
+  }).catch()
 }
 
-const beforeAvatarUpload = (file) => {
-  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-  const isLt2M = file.size / 1024 / 1024 < 2
+const handleSelectionChange = (rows) => { //返回所有返回的行对象数组
+                                          //从选中的行数组里面取出所有行的id组成一个新的数组
+  data.ids = rows.map(row => row.courseId)
+  console.log(data.ids)
+}
 
-  if (!isJPG) {
-    ElMessage.error('上传图片只能是 JPG 或 PNG 格式!')
+const delBatch = () => {
+  if(data.ids.length === 0){
+    ElMessage.warning('请选择数据')
+    return
   }
-  if (!isLt2M) {
-    ElMessage.error('上传图片大小不能超过 2MB!')
-  }
-  return isJPG && isLt2M
+  ElMessageBox.confirm('删除数据后无法恢复，您确认删除嘛？','删除确认', {type:"warning"}).then(() => {
+    request.delete('/course/deleteBatch', { data: data.ids }).then(res => {
+      if(res.code === '200'){
+        ElMessage.success('操作成功')
+        load() //删除后要重新加载最新数据
+      } else {
+        ElMessage.error(res.msg)
+      }
+    })
+  }).catch()
+}
+
+const handleAvatarSuccess = (response, file) => {
+  data.form.coverImage = response.data;
 }
 
 </script>

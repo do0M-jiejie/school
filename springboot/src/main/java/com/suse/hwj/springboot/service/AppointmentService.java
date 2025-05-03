@@ -1,6 +1,9 @@
 package com.suse.hwj.springboot.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.suse.hwj.springboot.entity.Appointment;
+import com.suse.hwj.springboot.entity.Order;
 import com.suse.hwj.springboot.mapper.AppointmentMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -18,8 +21,12 @@ public class AppointmentService {
     }
 
     public List<Appointment> userAppointments(String userId){
-
         return appointmentMapper.userAppointments(userId);
+    }
+
+    public List<Appointment> coachAppointments(String coachId) {
+        return appointmentMapper.coachAppointments(coachId);
+
     }
 
     public void cancel(Integer appointmentId){
@@ -29,4 +36,5 @@ public class AppointmentService {
     public void delete(Integer appointmentId){
         appointmentMapper.delete(appointmentId);
     }
+
 }

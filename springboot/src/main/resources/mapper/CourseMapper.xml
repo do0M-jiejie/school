@@ -6,12 +6,12 @@
     <update id="updateById" parameterType="com.suse.hwj.springboot.entity.Course">
         update `course`
         <set>
-            <if test="dto.coverImage != null">coverImage = #{dto.coverImage},</if>
-            <if test="dto.courseName != null">courseName = #{dto.courseName},</if>
-            <if test="dto.coachName != null">coachName = #{dto.coachName},</if>
-            <if test="dto.duration != null">duration = #{dto.duration},</if>
-            <if test="dto.price != null">price = #{dto.price},</if>
-            <if test="dto.description != null">descriptio = #{dto.descriptio},</if>
+            <if test="coverImage != null">cover_image = #{coverImage},</if>
+            <if test="courseName != null">course_name = #{courseName},</if>
+            <if test="coachName != null">coach_name = #{coachName},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="description != null">description = #{description}</if>
             where course_id = #{courseId}
         </set>
     </update>
@@ -33,6 +33,7 @@
         <where>
             <if test="courseName != null">course_name like concat('%', #{courseName},'%')</if>
         </where>
+        order by course_id desc
     </select>
 
 
